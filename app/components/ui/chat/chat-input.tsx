@@ -1,12 +1,14 @@
 "use client";
 
+import React from "react";
 import { ChatInput, useChatUI, useFile } from "@llamaindex/chat-ui";
 import { DocumentInfo, ImagePreview } from "@llamaindex/chat-ui/widgets";
 import { LlamaCloudSelector } from "./custom/llama-cloud-selector";
 import { useClientConfig } from "./hooks/use-config";
+import { AutoResizeTextarea } from "./tools/AutoResizeTextarea";
 
 export default function CustomChatInput() {
-  const { requestData, isLoading, input } = useChatUI();
+  const { requestData, isLoading, input, setInput } = useChatUI();
   const { backend } = useClientConfig();
   const {
     imageUrl,
@@ -43,7 +45,7 @@ export default function CustomChatInput() {
 
   return (
     <ChatInput
-      className="shadow-xl rounded-xl"
+      className="bg-white rounded-2xl p-4 flex flex-col gap-2 shadow-lg border border-gray-200 max-w-full"
       resetUploadedFiles={reset}
       annotations={annotations}
     >
@@ -66,15 +68,30 @@ export default function CustomChatInput() {
           </div>
         )}
       </div>
-      <ChatInput.Form>
-        <ChatInput.Field />
-        <ChatInput.Upload onUpload={handleUploadFile} />
-        <LlamaCloudSelector />
-        <ChatInput.Submit
-          disabled={
-            isLoading || (!input.trim() && files.length === 0 && !imageUrl)
-          }
+
+      <ChatInput.Form className="flex flex-col gap-3">
+        <AutoResizeTextarea
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Ask anything"
+          className="w-full bg-transparent text-gray-800 placeholder-gray-500 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
         />
+
+        <div className="flex justify-between items-center gap-2 flex-wrap">
+          <div className="flex gap-2">
+            <ChatInput.Upload
+              onUpload={handleUploadFile}
+              className="rounded-full border border-gray-300 p-2 hover:bg-gray-100"
+            />
+            <LlamaCloudSelector />
+          </div>
+          <ChatInput.Submit
+            className="bg-gray-800 text-white rounded-full p-3 hover:bg-gray-700 disabled:opacity-50"
+            disabled={
+              isLoading || (!input.trim() && files.length === 0 && !imageUrl)
+            }
+          />
+        </div>
       </ChatInput.Form>
     </ChatInput>
   );
