@@ -3,6 +3,7 @@
 import { ChatMessage, ChatMessages, useChatUI } from "@llamaindex/chat-ui";
 import { ChatMessageContent } from "./chat-message-content";
 import { ChatStarter } from "./chat-starter";
+import CustomChatActions from "./custom/custom-chat-actions";
 
 export default function CustomChatMessages() {
   const { messages } = useChatUI();
@@ -36,7 +37,7 @@ export default function CustomChatMessages() {
 
         <ChatMessages.Loading />
       </ChatMessages.List>
-      <ChatMessages.Actions />
+      <CustomChatActions />
     </ChatMessages>
   );
 }

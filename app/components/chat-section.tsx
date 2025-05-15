@@ -24,9 +24,17 @@ export default function ChatSection() {
     },
   });
   return (
-    <ChatSectionUI handler={handler} className="w-full h-full">
-      <CustomChatMessages />
-      <CustomChatInput />
+    <ChatSectionUI
+      handler={handler}
+      className="w-full h-full flex flex-col"
+    >
+      <div className="flex-1 overflow-y-auto p-4 pt-20">
+        <CustomChatMessages />
+      </div>
+
+      <div className="border-t p-4 bg-white dark:bg-zinc-900">
+        <CustomChatInput />
+      </div>
     </ChatSectionUI>
   );
 }
