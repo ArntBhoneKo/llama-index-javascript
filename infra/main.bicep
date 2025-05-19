@@ -238,6 +238,10 @@ module llamaIndexNextjs './app/llama-index-nextjs.bicep' = {
           value: llamaIndexConfig.system_prompt
         }
         {
+          name: 'CONVERSATION_STARTERS'
+          value: 'What are your services?\nTell me a fun fact.\nHow can I contact support?\nGive me a product demo.'
+        }
+        {
           name: 'OPENAI_API_TYPE'
           value: 'AzureOpenAI'
         }
@@ -286,3 +290,5 @@ output OPENAI_API_TYPE string = 'AzureOpenAI'
 output STORAGE_CACHE_DIR string = './cache'
 output AZURE_STORAGE_CONNECTION_STRING string = storage.outputs.storageAccountConnectionString
 output AZURE_STORAGE_CONTAINER_NAME string = 'llama-index-data'
+output SCRAPER_API_URL string = 'https://llama-web-scraper.azurewebsites.net/scrape'
+output CONVERSATION_STARTERS string = 'What are your services?\nTell me a fun fact.\nHow can I contact support?\nGive me a product demo.'

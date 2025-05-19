@@ -22,5 +22,23 @@ export function ChatStarter() {
   }, [starterQuestions, backend]);
 
   if (!starterQuestions?.length) return null;
-  return <StarterQuestions append={append} questions={starterQuestions} />;
+
+  return (
+    <div className="w-full px-4 py-6">
+      <p className="mb-4 text-base font-medium text-gray-800 dark:text-white">
+        What do you want to ask today?
+      </p>
+      <div className="flex flex-wrap gap-3">
+        {starterQuestions.map((q, idx) => (
+          <button
+            key={idx}
+            onClick={() => append({ role: "user", content: q })}
+            className="px-4 py-2 rounded-lg bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 transition text-sm w-full sm:w-auto text-center"
+          >
+            {q}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }

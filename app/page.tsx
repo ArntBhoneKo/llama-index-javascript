@@ -1,15 +1,20 @@
+'use client';
+
 import Header from "@/app/components/header";
 import ChatSection from "./components/chat-section";
+import withAuth from "@/app/components/withAuth";
 
-export default function Home() {
+function Home() {
   return (
-    <main className="h-screen w-screen flex justify-center items-center background-gradient">
-      <div className="space-y-2 lg:space-y-10 w-[90%] lg:w-[60rem]">
-        <Header />
-        <div className="h-[65vh] flex">
+    <main className="h-screen w-screen flex flex-col bg-white dark:bg-zinc-900">
+      <Header />
+      <div className="flex-1 overflow-hidden flex justify-center">
+        <div className="w-full max-w-3xl flex flex-col">
           <ChatSection />
         </div>
       </div>
     </main>
   );
 }
+
+export default withAuth(Home);

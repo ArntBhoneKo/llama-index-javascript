@@ -1,30 +1,46 @@
 "use client";
 
 import { ChatMessage, ChatMessages, useChatUI } from "@llamaindex/chat-ui";
-import { ChatMessageAvatar } from "./chat-avatar";
 import { ChatMessageContent } from "./chat-message-content";
 import { ChatStarter } from "./chat-starter";
+import CustomChatActions from "./custom/custom-chat-actions";
 
 export default function CustomChatMessages() {
   const { messages } = useChatUI();
+  const hasMessages = messages.length > 0;
+
   return (
-    <ChatMessages className="shadow-xl rounded-xl">
+    <ChatMessages className="bg-white text-black px-4 py-6 rounded-xl shadow overflow-y-auto">
       <ChatMessages.List>
+        {!hasMessages && <ChatStarter />}
+
         {messages.map((message, index) => (
-          <ChatMessage
+          <div
             key={index}
-            message={message}
-            isLast={index === messages.length - 1}
+            className={`mb-4 flex ${
+              message.role === "user" ? "justify-end" : "justify-start"
+            }`}
           >
-            <ChatMessageAvatar />
-            <ChatMessageContent />
-            <ChatMessage.Actions />
-          </ChatMessage>
+            <div
+              className={`${message.role === "user"
+                ? "max-w-[70%]" : "w-full"
+              }
+               px-4 py-2 rounded-2xl ${
+                message.role === "user"
+                  ? "bg-blue-100 text-black"
+                  : "bg-gray-200 text-black"
+              }`}
+            >
+              <ChatMessage message={message} isLast={index === messages.length - 1}>
+                <ChatMessageContent />
+              </ChatMessage>
+            </div>
+          </div>
         ))}
+
         <ChatMessages.Loading />
       </ChatMessages.List>
-      <ChatMessages.Actions />
-      <ChatStarter />
+      <CustomChatActions />
     </ChatMessages>
   );
 }

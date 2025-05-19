@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Header from "@/app/components/header";
 import {
@@ -7,15 +9,22 @@ import {
   FaShieldAlt,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function MenuPage() {
+  const router = useRouter();
+
   const menuItems = [
     { label: "Our Services", href: "/services", icon: <FaConciergeBell />, color: "bg-blue-100 text-blue-600" },
     { label: "Contact Us", href: "/contact", icon: <FaEnvelope />, color: "bg-green-100 text-green-600" },
     { label: "Terms and Conditions", href: "/terms", icon: <FaFileContract />, color: "bg-yellow-100 text-yellow-600" },
     { label: "Security", href: "/security", icon: <FaShieldAlt />, color: "bg-purple-100 text-purple-600" },
-    { label: "Logout", href: "/logout", icon: <FaSignOutAlt />, color: "bg-red-100 text-red-600" },
   ];
+
+  function handleLogout() {
+    localStorage.removeItem("isLoggedIn");
+    router.push("/login");
+  }
 
   return (
     <main className="h-screen w-screen flex justify-center items-center bg-gradient-to-b from-zinc-200 dark:from-black p-4">
@@ -40,6 +49,21 @@ export default function MenuPage() {
                 </Link>
               </li>
             ))}
+
+            {/* Logout item as a button */}
+            <li>
+              <button
+                onClick={handleLogout}
+                className="flex w-full items-center space-x-4 p-3 rounded-lg bg-gray-50 dark:bg-zinc-800 hover:shadow-lg hover:-translate-y-1 transition-transform"
+              >
+                <span className="p-2 rounded-full bg-red-100 text-red-600">
+                  <FaSignOutAlt />
+                </span>
+                <span className="flex-1 text-left font-medium text-gray-800 dark:text-gray-200">
+                  Logout
+                </span>
+              </button>
+            </li>
           </ul>
 
           <Link
