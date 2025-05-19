@@ -22,7 +22,10 @@ export default function CustomChatMessages() {
             }`}
           >
             <div
-              className={`max-w-[70%] px-4 py-2 rounded-2xl ${
+              className={`${message.role === "user"
+                ? "max-w-[70%]" : "w-full"
+              }
+               px-4 py-2 rounded-2xl ${
                 message.role === "user"
                   ? "bg-blue-100 text-black"
                   : "bg-gray-200 text-black"
