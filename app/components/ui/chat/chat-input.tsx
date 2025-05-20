@@ -45,7 +45,7 @@ export default function CustomChatInput() {
 
   return (
     <ChatInput
-      className="bg-white rounded-2xl p-4 flex flex-col gap-2 shadow-lg border border-gray-200 max-w-full"
+      className="bg-white dark:bg-zinc-800 rounded-2xl p-4 flex flex-col gap-2 shadow-lg border border-gray-200 dark:border-zinc-700 max-w-full"
       resetUploadedFiles={reset}
       annotations={annotations}
     >
@@ -74,14 +74,14 @@ export default function CustomChatInput() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask anything"
-          className="w-full bg-transparent text-gray-800 placeholder-gray-500 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none"
+          className="w-full bg-transparent text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 px-4 py-2 border border-gray-300 dark:border-zinc-600 rounded-xl focus:outline-none"
         />
 
         <div className="flex justify-between items-center gap-2 flex-wrap">
           <div className="flex gap-2">
             <ChatInput.Upload
               onUpload={handleUploadFile}
-              className="rounded-full border border-gray-300 p-2 hover:bg-gray-100"
+              className="rounded-full border border-gray-300 dark:border-zinc-600 p-2 hover:bg-gray-100 dark:hover:bg-zinc-700"
             />
             <LlamaCloudSelector />
           </div>
