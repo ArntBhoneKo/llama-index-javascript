@@ -239,7 +239,7 @@ module llamaIndexNextjs './app/llama-index-nextjs.bicep' = {
         }
         {
           name: 'CONVERSATION_STARTERS'
-          value: 'What are your services?\nTell me a fun fact.\nHow can I contact support?\nGive me a product demo.'
+          value: 'Can you help me get a residence card and register at city hall?\nCan you show me how to open a bank account or get a SIM card?\nCan you help me find a cheap apartment or share house?\nCan you explain how to use trains, buses, and buy IC cards?\nCan you teach me useful Japanese phrases for daily life?\nCan you help me find jobs or part-time work in Japan?'
         }
         {
           name: 'OPENAI_API_TYPE'
@@ -291,4 +291,4 @@ output STORAGE_CACHE_DIR string = './cache'
 output AZURE_STORAGE_CONNECTION_STRING string = storage.outputs.storageAccountConnectionString
 output AZURE_STORAGE_CONTAINER_NAME string = 'llama-index-data'
 output SCRAPER_API_URL string = 'https://llama-web-scraper.azurewebsites.net/scrape'
-output CONVERSATION_STARTERS string = 'What are your services?\nTell me a fun fact.\nHow can I contact support?\nGive me a product demo.'
+output CONVERSATION_STARTERS string = 'Can you help me get a residence card and register at city hall?\nCan you show me how to open a bank account or get a SIM card?\nCan you help me find a cheap apartment or share house?\nCan you explain how to use trains, buses, and buy IC cards?\nCan you teach me useful Japanese phrases for daily life?\nCan you help me find jobs or part-time work in Japan?'

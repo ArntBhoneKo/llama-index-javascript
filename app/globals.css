@@ -123,4 +123,24 @@
   .animate-slideIn {
     animation: slideIn 0.5s ease-out;
   }
+  /* Custom scrollbar for dark/light theme */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(100, 116, 139, 0.4); /* slate-500/40 */
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.15); /* softer white in dark */
+  }
 }

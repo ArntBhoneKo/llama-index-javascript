@@ -10,6 +10,7 @@ import { useClientConfig } from "./ui/chat/hooks/use-config";
 
 export default function ChatSection() {
   const { backend } = useClientConfig();
+
   const handler = useChat({
     api: `${backend}/api/chat`,
     onError: (error: unknown) => {
@@ -23,16 +24,19 @@ export default function ChatSection() {
       alert(errorMessage);
     },
   });
+
   return (
     <ChatSectionUI
       handler={handler}
-      className="w-full h-full flex flex-col"
+      className="w-full h-full flex flex-col bg-transparent"
     >
-      <div className="flex-1 overflow-y-auto p-4 pt-20">
+      {/* Chat messages area */}
+      <div className="flex-1 overflow-y-auto scrollbar-thin px-6 pt-8 pb-4 bg-gray-50 dark:bg-zinc-900 rounded-t-xl">
         <CustomChatMessages />
       </div>
 
-      <div className="border-t p-4 bg-white dark:bg-zinc-900">
+      {/* Chat input area */}
+      <div className="px-6 py-4 bg-white dark:bg-zinc-900 rounded-b-xl border-t border-transparent dark:border-transparent">
         <CustomChatInput />
       </div>
     </ChatSectionUI>

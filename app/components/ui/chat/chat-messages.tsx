@@ -10,7 +10,7 @@ export default function CustomChatMessages() {
   const hasMessages = messages.length > 0;
 
   return (
-    <ChatMessages className="bg-white text-black px-4 py-6 rounded-xl shadow overflow-y-auto">
+    <ChatMessages className="bg-white dark:bg-zinc-900 text-black dark:text-white px-4 py-6 rounded-xl shadow overflow-y-auto">
       <ChatMessages.List>
         {!hasMessages && <ChatStarter />}
 
@@ -22,13 +22,12 @@ export default function CustomChatMessages() {
             }`}
           >
             <div
-              className={`${message.role === "user"
-                ? "max-w-[70%]" : "w-full"
-              }
-               px-4 py-2 rounded-2xl ${
+              className={`${
+                message.role === "user" ? "max-w-[70%]" : "w-full"
+              } px-4 py-2 rounded-2xl ${
                 message.role === "user"
-                  ? "bg-blue-100 text-black"
-                  : "bg-gray-200 text-black"
+                  ? "bg-blue-100 dark:bg-blue-600 text-black dark:text-white"
+                  : "bg-gray-200 dark:bg-zinc-700 text-black dark:text-white"
               }`}
             >
               <ChatMessage message={message} isLast={index === messages.length - 1}>
