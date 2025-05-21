@@ -239,4 +239,6 @@ const ContactUs: React.FC = () => {
   );
 };
 
-export default ContactUs;
+export default function ContactPage() {
+  return <ContactUs />;
+}
