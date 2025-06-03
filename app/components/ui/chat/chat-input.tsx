@@ -71,11 +71,23 @@ export default function CustomChatInput() {
 
       <ChatInput.Form className="flex flex-col gap-3">
         <AutoResizeTextarea
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask anything"
-          className="w-full bg-transparent text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 px-4 py-2 border border-gray-300 dark:border-zinc-600 rounded-xl focus:outline-none"
-        />
+  value={input}
+  onChange={(e) => setInput(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Prevent newline
+      if (!isLoading && (input.trim() || files.length > 0 || imageUrl)) {
+        // Submit the form programmatically
+        const form = e.currentTarget.closest("form");
+        if (form) {
+          form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+        }
+      }
+    }
+  }}
+  placeholder="Ask anything"
+  className="w-full bg-transparent text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 px-4 py-2 border border-gray-300 dark:border-zinc-600 rounded-xl focus:outline-none"
+/>
 
         <div className="flex justify-between items-center gap-2 flex-wrap">
           <div className="flex gap-2">
@@ -86,9 +98,10 @@ export default function CustomChatInput() {
             <LlamaCloudSelector />
           </div>
           <ChatInput.Submit
+            data-submit-button
             className="bg-gray-800 text-white rounded-full p-3 hover:bg-gray-700 disabled:opacity-50"
             disabled={
-              isLoading || (!input.trim() && files.length === 0 && !imageUrl)
+            isLoading || (!input.trim() && files.length === 0 && !imageUrl)
             }
           />
         </div>
