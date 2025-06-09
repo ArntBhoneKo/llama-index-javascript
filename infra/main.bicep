@@ -130,6 +130,30 @@ module storage './shared/storage.bicep' = {
   }
 }
 
+module cosmosDb './shared/cosmosdb.bicep' = {
+  name: 'cosmosdb'
+  scope: rg
+  params: {
+    location: location
+    cosmosDbAccountName: '${abbrs.documentDbAccounts}${resourceToken}'
+    tags: tags
+  }
+}
+
+resource cosmosDbUsernameSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  name: '${name}/cosmosDbUsername'
+  properties: {
+    value: 'llamaindexuser' // your username
+  }
+}
+
+resource cosmosDbPasswordSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  name: '${name}/cosmosDbPassword'
+  properties: {
+    value: 'YOUR_LONG_RANDOM_PASSWORD'
+  }
+}
+
 module openAi './shared/cognitiveservices.bicep' = if (empty(openAiUrl)) {
   name: 'openai'
   scope: rg
@@ -261,6 +285,10 @@ module llamaIndexNextjs './app/llama-index-nextjs.bicep' = {
           name: 'SCRAPER_API_URL'
           value: 'https://llama-web-scraper.azurewebsites.net/scrape'
         }
+        {
+          name: 'MONGODB_URI'
+          value: 'mongodb://USERNAME:PASSWORD@${cosmosDb.outputs.cosmosDbMongoConnectionHost}:10255/llamaindexdb?ssl=true&retrywrites=false'
+        }
       ]
     })
   }
@@ -292,3 +320,7 @@ output AZURE_STORAGE_CONNECTION_STRING string = storage.outputs.storageAccountCo
 output AZURE_STORAGE_CONTAINER_NAME string = 'llama-index-data'
 output SCRAPER_API_URL string = 'https://llama-web-scraper.azurewebsites.net/scrape'
 output CONVERSATION_STARTERS string = 'Can you help me get a residence card and register at city hall?\nCan you show me how to open a bank account or get a SIM card?\nCan you help me find a cheap apartment or share house?\nCan you explain how to use trains, buses, and buy IC cards?\nCan you teach me useful Japanese phrases for daily life?\nCan you help me find jobs or part-time work in Japan?'
+output COSMOSDB_ACCOUNT_NAME string = cosmosDb.outputs.cosmosDbAccountName
+output COSMOSDB_ACCOUNT_ENDPOINT string = cosmosDb.outputs.cosmosDbAccountEndpoint
+output cosmosDbUsername string = cosmosDbUsernameSecret.properties.value
+output cosmosDbPassword string = cosmosDbPasswordSecret.properties.value
