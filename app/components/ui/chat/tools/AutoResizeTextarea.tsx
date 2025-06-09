@@ -1,10 +1,15 @@
-import React, { useRef, useEffect, ChangeEvent } from "react";
+import React, {
+  useRef,
+  useEffect,
+  ChangeEvent,
+  KeyboardEvent,
+  TextareaHTMLAttributes,
+} from "react";
 
-export interface AutoResizeTextareaProps {
+export interface AutoResizeTextareaProps
+  extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> {
   value: string;
   onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
-  placeholder?: string;
-  className?: string;
 }
 
 /**
@@ -15,6 +20,8 @@ export function AutoResizeTextarea({
   onChange,
   placeholder,
   className,
+  onKeyDown,
+  ...rest
 }: AutoResizeTextareaProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -41,6 +48,8 @@ export function AutoResizeTextarea({
       placeholder={placeholder}
       value={value}
       onChange={handleInput}
+      onKeyDown={onKeyDown}
+      {...rest}
     />
   );
 }
