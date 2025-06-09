@@ -30,13 +30,13 @@ export default function ChatSection() {
       handler={handler}
       className="w-full h-full flex flex-col bg-transparent"
     >
-      {/* Chat messages area */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin px-6 pt-8 pb-4 bg-gray-50 dark:bg-zinc-900 rounded-t-xl">
+      {/* Messages area with scroll */}
+      <div className="flex-1 overflow-y-auto px-6 pt-8 pb-4 bg-transparent">
         <CustomChatMessages />
       </div>
 
-      {/* Chat input area */}
-      <div className="px-6 py-4 bg-white dark:bg-zinc-900 rounded-b-xl border-t border-transparent dark:border-transparent">
+      {/* Input fixed to bottom of container */}
+      <div className="px-6 py-4 bg-transparent border-none">
         <CustomChatInput />
       </div>
     </ChatSectionUI>
