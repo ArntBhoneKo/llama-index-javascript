@@ -24,6 +24,16 @@ param openAiSkuName string = 'S0' // Set in main.parameters.json
 param openAiUrl string = '' // Set in main.parameters.json
 param openAiApiVersion string // Set in main.parameters.json
 
+@secure()
+param googleClientId string
+
+@secure()
+param googleClientSecret string
+
+@secure()
+@description('Admin password for MongoDB cluster')
+param mongoAdminPassword string
+
 var finalOpenAiUrl = empty(openAiUrl) ? 'https://${openAi.outputs.name}.openai.azure.com' : openAiUrl
 
 var llamaIndexConfig = {
@@ -100,13 +110,16 @@ module registry './shared/registry.bicep' = {
 
 module keyVault './shared/keyvault.bicep' = {
   name: 'keyvault'
+  scope: rg
   params: {
+    name: '${abbrs.keyVaultVaults}${resourceToken}'
     location: location
     tags: tags
-    name: '${abbrs.keyVaultVaults}${resourceToken}'
     principalId: principalId
+    googleClientId: googleClientId
+    googleClientSecret: googleClientSecret
+    cosmosDbPassword: mongoAdminPassword 
   }
-  scope: rg
 }
 
 module appsEnv './shared/apps-env.bicep' = {
@@ -135,22 +148,10 @@ module cosmosDb './shared/cosmosdb.bicep' = {
   scope: rg
   params: {
     location: location
-    cosmosDbAccountName: '${abbrs.documentDbAccounts}${resourceToken}'
+    mongoClusterName: '${abbrs.documentDBDatabaseAccounts}${resourceToken}'
     tags: tags
-  }
-}
-
-resource cosmosDbUsernameSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
-  name: '${name}/cosmosDbUsername'
-  properties: {
-    value: 'llamaindexuser' // your username
-  }
-}
-
-resource cosmosDbPasswordSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
-  name: '${name}/cosmosDbPassword'
-  properties: {
-    value: 'YOUR_LONG_RANDOM_PASSWORD'
+    mongoAdminUsername: 'llamaindexuser'
+    mongoAdminPassword: mongoAdminPassword
   }
 }
 
@@ -206,59 +207,59 @@ module llamaIndexNextjs './app/llama-index-nextjs.bicep' = {
     appDefinition: union(llamaIndexNextjsDefinition, {
       settings: [
         {
-          name: 'AZURE_KEY_VAULT_NAME' 
+          name: 'AZURE_KEY_VAULT_NAME'
           value: keyVault.outputs.name
         }
         {
-          name: 'AZURE_KEY_VAULT_ENDPOINT' 
+          name: 'AZURE_KEY_VAULT_ENDPOINT'
           value: keyVault.outputs.endpoint
         }
         {
-          name: 'AZURE_OPENAI_ENDPOINT' 
+          name: 'AZURE_OPENAI_ENDPOINT'
           value: finalOpenAiUrl
         }
         {
-          name: 'AZURE_DEPLOYMENT_NAME' 
+          name: 'AZURE_DEPLOYMENT_NAME'
           value: llamaIndexConfig.chat.deployment
         }
         {
-          name: 'OPENAI_API_VERSION' 
+          name: 'OPENAI_API_VERSION'
           value: openAiApiVersion
         }
         {
-          name: 'MODEL_PROVIDER' 
+          name: 'MODEL_PROVIDER'
           value: llamaIndexConfig.model_provider
         }
         {
-          name: 'MODEL' 
+          name: 'MODEL'
           value: llamaIndexConfig.chat.model
         }
         {
-          name: 'EMBEDDING_MODEL' 
+          name: 'EMBEDDING_MODEL'
           value: llamaIndexConfig.embedding.model
         }
         {
-          name: 'EMBEDDING_DIM' 
+          name: 'EMBEDDING_DIM'
           value: llamaIndexConfig.embedding.dim
         }
         {
-          name: 'LLM_TEMPERATURE' 
+          name: 'LLM_TEMPERATURE'
           value: llamaIndexConfig.llm_temperature
         }
         {
-          name: 'LLM_MAX_TOKENS' 
+          name: 'LLM_MAX_TOKENS'
           value: llamaIndexConfig.llm_max_tokens
         }
         {
-          name: 'TOP_K' 
+          name: 'TOP_K'
           value: llamaIndexConfig.top_k
         }
         {
-          name: 'FILESERVER_URL_PREFIX' 
+          name: 'FILESERVER_URL_PREFIX'
           value: llamaIndexConfig.fileserver_url_prefix
         }
         {
-          name: 'SYSTEM_PROMPT' 
+          name: 'SYSTEM_PROMPT'
           value: llamaIndexConfig.system_prompt
         }
         {
@@ -287,7 +288,15 @@ module llamaIndexNextjs './app/llama-index-nextjs.bicep' = {
         }
         {
           name: 'MONGODB_URI'
-          value: 'mongodb://USERNAME:PASSWORD@${cosmosDb.outputs.cosmosDbMongoConnectionHost}:10255/llamaindexdb?ssl=true&retrywrites=false'
+          value: 'mongodb://llamaindexuser:${cosmosDb.outputs.cosmosDbAdminPassword}@${cosmosDb.outputs.cosmosDbMongoConnectionHost}:10255/llamaindexdb?ssl=true&retrywrites=false'
+        }
+        {
+          name: 'GOOGLE_CLIENT_ID'
+          value: keyVault.outputs.googleClientIdSecretValue
+        }
+        {
+          name: 'GOOGLE_CLIENT_SECRET'
+          value: keyVault.outputs.googleClientSecretSecretValue
         }
       ]
     })
@@ -320,7 +329,5 @@ output AZURE_STORAGE_CONNECTION_STRING string = storage.outputs.storageAccountCo
 output AZURE_STORAGE_CONTAINER_NAME string = 'llama-index-data'
 output SCRAPER_API_URL string = 'https://llama-web-scraper.azurewebsites.net/scrape'
 output CONVERSATION_STARTERS string = 'Can you help me get a residence card and register at city hall?\nCan you show me how to open a bank account or get a SIM card?\nCan you help me find a cheap apartment or share house?\nCan you explain how to use trains, buses, and buy IC cards?\nCan you teach me useful Japanese phrases for daily life?\nCan you help me find jobs or part-time work in Japan?'
-output COSMOSDB_ACCOUNT_NAME string = cosmosDb.outputs.cosmosDbAccountName
-output COSMOSDB_ACCOUNT_ENDPOINT string = cosmosDb.outputs.cosmosDbAccountEndpoint
-output cosmosDbUsername string = cosmosDbUsernameSecret.properties.value
-output cosmosDbPassword string = cosmosDbPasswordSecret.properties.value
+output COSMOSDB_ACCOUNT_HOST string = cosmosDb.outputs.cosmosDbMongoConnectionHost
+output COSMOSDB_ADMIN_USERNAME string = cosmosDb.outputs.cosmosDbAdminUsername

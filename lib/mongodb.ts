@@ -1,26 +1,25 @@
 import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGODB_URI!;
-const options = {};
+const uri = process.env.MONGODB_URI;
 
-let client;
-let clientPromise: Promise<MongoClient>;
+let clientPromise: Promise<MongoClient> | undefined;
 
-if (!process.env.MONGODB_URI) {
-  throw new Error("Please add your Mongo URI to .env.local");
-}
+if (uri) {
+  const options = {};
+  let client: MongoClient;
 
-if (process.env.NODE_ENV === "development") {
-  // In dev mode, use a global variable to preserve value across HMR
-  if (!(global as any)._mongoClientPromise) {
+  if (process.env.NODE_ENV === "development") {
+    if (!(global as any)._mongoClientPromise) {
+      client = new MongoClient(uri, options);
+      (global as any)._mongoClientPromise = client.connect();
+    }
+    clientPromise = (global as any)._mongoClientPromise;
+  } else {
     client = new MongoClient(uri, options);
-    (global as any)._mongoClientPromise = client.connect();
+    clientPromise = client.connect();
   }
-  clientPromise = (global as any)._mongoClientPromise;
 } else {
-  // In production mode, create new client
-  client = new MongoClient(uri, options);
-  clientPromise = client.connect();
+  console.warn("⚠️ WARNING: MONGODB_URI not defined. Skipping MongoClient init. This is expected at build time.");
 }
 
 export default clientPromise;

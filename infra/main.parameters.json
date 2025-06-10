@@ -30,6 +30,10 @@
     },
     "azureDeploymentName": {
       "value": "${AZURE_DEPLOYMENT_NAME=gpt-4o-mini}"
+    },
+    
+    "mongoAdminPassword": {
+      "value": "${COSMOS_MONGO_ADMIN_PASSWORD}" 
     }
   }
 }

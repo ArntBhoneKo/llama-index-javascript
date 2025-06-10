@@ -1,42 +1,42 @@
-@minLength(1)
-@description('Location for Cosmos DB')
+@description('Location for Cosmos DB Mongo Cluster')
 param location string
 
-@description('Resource name for Cosmos DB account')
-param cosmosDbAccountName string
+@description('Name of the Cosmos DB Mongo Cluster')
+param mongoClusterName string
 
-@description('Tags for Cosmos DB resources')
+@description('Tags for resources')
 param tags object = {}
 
-resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
-  name: cosmosDbAccountName
+@description('Admin username for MongoDB cluster')
+param mongoAdminUsername string = 'llamaindexuser'
+
+@secure()
+@description('Admin password for MongoDB cluster')
+param mongoAdminPassword string
+
+resource cosmosDbMongoCluster 'Microsoft.DocumentDB/mongoClusters@2024-03-01-preview' = {
+  name: mongoClusterName
   location: location
-  kind: 'MongoDB'
+  sku: {
+    name: 'GeneralPurpose'
+    tier: 'GeneralPurpose'
+  }
   properties: {
-    databaseAccountOfferType: 'Standard'
-    locations: [
+    administratorLogin: mongoAdminUsername
+    administratorLoginPassword: mongoAdminPassword
+    nodeGroupSpecs: [
       {
-        locationName: location
-        failoverPriority: 0
+        kind: 'Shard'
+        nodeCount: 3
+        sku: 'M30'          // Choose M30, M40, M50 based on region & cost
+        enableHa: true
+        diskSizeGB: 128     // Minimum disk size per node
       }
     ]
-    apiProperties: {
-      serverVersion: '4.2' // current supported MongoDB version
-    }
-    enableFreeTier: true // Optional: free tier (1st account only)
   }
   tags: tags
 }
 
-// Optional: Create database (next-auth will create collections)
-resource mongoDatabase 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2023-04-15' = {
-  name: '${cosmosDbAccount.name}/llamaindexdb'
-  properties: {
-    resource: {
-      id: 'llamaindexdb'
-    }
-  }
-}
-
-output cosmosDbAccountName string = cosmosDbAccount.name
-output cosmosDbAccountEndpoint string = cosmosDbAccount.properties.documentEndpoint
+output cosmosDbMongoConnectionHost string = '${cosmosDbMongoCluster.name}.mongo.cosmos.azure.com'
+output cosmosDbAdminUsername string = cosmosDbMongoCluster.properties.administratorLogin
+output cosmosDbAdminPassword string = mongoAdminPassword
