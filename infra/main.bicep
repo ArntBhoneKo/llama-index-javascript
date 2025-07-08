@@ -261,6 +261,42 @@ module llamaIndexNextjs './app/llama-index-nextjs.bicep' = {
           name: 'SCRAPER_API_URL'
           value: 'https://llama-web-scraper.azurewebsites.net/scrape'
         }
+        {
+          name: 'NEXTAUTH_URL'
+          value: 'https://${abbrs.appContainerApps}llama-index-${resourceToken}.${appsEnv.outputs.domain}'
+        }
+        {
+          name: 'NEXTAUTH_SECRET'
+          value: 'your-production-secret-key'
+        }
+        {
+          name: 'GOOGLE_CLIENT_ID'
+          value: ''
+        }
+        {
+          name: 'GOOGLE_CLIENT_SECRET'
+          value: ''
+        }
+        {
+          name: 'GITHUB_ID'
+          value: ''
+        }
+        {
+          name: 'GITHUB_SECRET'
+          value: ''
+        }
+        {
+          name: 'AZURE_AD_CLIENT_ID'
+          value: ''
+        }
+        {
+          name: 'AZURE_AD_CLIENT_SECRET'
+          value: ''
+        }
+        {
+          name: 'AZURE_AD_TENANT_ID'
+          value: ''
+        }
       ]
     })
   }

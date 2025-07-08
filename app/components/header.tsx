@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from "react";
-import { Bars3Icon, Cog6ToothIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, Cog6ToothIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import MenuModal from "./ui/menu";
 import SettingsModal from "./ui/setting";
@@ -9,6 +10,7 @@ import SettingsModal from "./ui/setting";
 export default function Header() {
   const [showMenu, setShowMenu] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const { data: session } = useSession();
 
   return (
     <>
@@ -32,8 +34,19 @@ export default function Header() {
             <code className="font-mono font-bold">NEX4 ICT Solutions</code>
           </Link>
 
-          {/* Placeholder for alignment */}
-          <div className="w-12" />
+          {/* User info and sign out */}
+          <div className="flex items-center gap-2">
+            {session?.user?.name && (
+              <span className="text-sm text-gray-700 dark:text-white hidden sm:block">
+                {session.user.name}
+              </span>
+            )}
+            <ArrowRightOnRectangleIcon
+              className="w-6 h-6 text-gray-700 dark:text-white cursor-pointer"
+              onClick={() => signOut({ callbackUrl: '/login' })}
+              title="Sign Out"
+            />
+          </div>
         </div>
       </div>
 
