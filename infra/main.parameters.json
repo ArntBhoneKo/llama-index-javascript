@@ -30,6 +30,12 @@
     },
     "azureDeploymentName": {
       "value": "${AZURE_DEPLOYMENT_NAME=gpt-4o-mini}"
+    },
+    "googleClientId": {
+      "value": "${GOOGLE_CLIENT_ID}"
+    },
+    "googleClientSecret": {
+      "value": "${GOOGLE_CLIENT_SECRET}"
     }
   }
 }

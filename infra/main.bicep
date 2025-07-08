@@ -24,6 +24,11 @@ param openAiSkuName string = 'S0' // Set in main.parameters.json
 param openAiUrl string = '' // Set in main.parameters.json
 param openAiApiVersion string // Set in main.parameters.json
 
+@secure()
+param googleClientId string = ''
+@secure()
+param googleClientSecret string = ''
+
 var finalOpenAiUrl = empty(openAiUrl) ? 'https://${openAi.outputs.name}.openai.azure.com' : openAiUrl
 
 var llamaIndexConfig = {
@@ -267,35 +272,15 @@ module llamaIndexNextjs './app/llama-index-nextjs.bicep' = {
         }
         {
           name: 'NEXTAUTH_SECRET'
-          value: 'your-production-secret-key'
+          value: 'a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6'
         }
         {
           name: 'GOOGLE_CLIENT_ID'
-          value: ''
+          value: googleClientId
         }
         {
           name: 'GOOGLE_CLIENT_SECRET'
-          value: ''
-        }
-        {
-          name: 'GITHUB_ID'
-          value: ''
-        }
-        {
-          name: 'GITHUB_SECRET'
-          value: ''
-        }
-        {
-          name: 'AZURE_AD_CLIENT_ID'
-          value: ''
-        }
-        {
-          name: 'AZURE_AD_CLIENT_SECRET'
-          value: ''
-        }
-        {
-          name: 'AZURE_AD_TENANT_ID'
-          value: ''
+          value: googleClientSecret
         }
       ]
     })
